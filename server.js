@@ -11,38 +11,56 @@ app.get('/',function(req,res){
     res.sendFile(__dirname+'/index.html');
 });
 
-server.lastPlayderID = 0;
-
 server.listen(process.env.PORT || 8081,function(){
     console.log('Listening on '+server.address().port);
 });
 
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+}
+
+var clients = [];
+
 io.on('connection',function(socket){
 
-    // socket.on('newplayer',function(){
-    //     socket.player = {
-    //         id: server.lastPlayderID++,
-    //         x: randomInt(100,400),
-    //         y: randomInt(100,400)
-    //     };
+    var pass = null;
 
-    //     console.log(socket.player);
+    var long_id = uuidv4();
+    var id = long_id.split("-")
+    console.log(id[0]);
 
-    //     socket.emit('newplayer',socket.player);
+    clients.push({"socket":socket.id,"pass":id[0]}); 
 
-    //     // socket.on('disconnect',function(){
-    //     //     io.emit('remove',socket.player.id);
-    //     // });
-    // });
+    socket.on('send_pass',function(data){
+        pass = data;
+        console.log("send pass="+pass);
+    });
+
+    socket.emit('newplayer',id[0]);
     
     socket.on('pos_chg',function(data){
-            console.log('click to '+data.x+', '+data.y);
-            io.emit('move',{x:data.x, y:data.y});
-        });
+        console.log(clients);
+        console.log('click to '+data.x+', '+data.y);
+
+        for(var i in clients){
+            console.log(clients[i].pass)
+            if(clients[i].pass == pass){
+                if(io.sockets.connected[clients[i].socket] != null)
+                io.sockets.connected[clients[i].socket].emit('move',{x:data.x, y:data.y});
+            }
+        }
+
+        //io.sockets.connected[clients[pass].socket].emit('move',{x:data.x, y:data.y});
+        //io.emit('move',{x:data.x, y:data.y});
+
+    });
 
     socket.on('fire',function(){
-            io.emit('launch');
-        });
+        io.emit('launch');
+    });
 
     socket.on('test',function(){
         console.log('test received');

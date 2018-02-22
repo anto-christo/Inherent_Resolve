@@ -1,7 +1,3 @@
-/**
- * Created by Jerome on 03-03-17.
- */
-
 var Client = {};
 Client.socket = io.connect();
 
@@ -19,6 +15,11 @@ function sendPos(x,y){
 function sendFire(){
     Client.socket.emit('fire');
 };
+
+function send_pass(pass){
+    console.log("in send pass");
+    Client.socket.emit('send_pass',pass);
+};
     
 Client.socket.on('move',function(data){
     movePlayer(data.x,data.y);
@@ -26,6 +27,11 @@ Client.socket.on('move',function(data){
 
 Client.socket.on('launch',function(){
     release();
+});
+
+Client.socket.on('newplayer',function(data){
+    console.log("on new");
+    connect_player(data);
 });
 
 

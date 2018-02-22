@@ -52,6 +52,13 @@ game.state.add('gameState4', gameState4);
 
 game.state.start('gameState1');
 
+var password = 'Generating password.....';
+
+function connect_player(data){
+    password = data;
+    console.log(password);
+}
+
 
 function preload(){
     // game.load.image('button','assets/sprites/play.png');
@@ -60,11 +67,17 @@ function preload(){
     game.load.image('logo','assets/sprites/logo.png');
 }
 
+function hello(){
+    alert("hello");
+}
+
 function create(){
 
-    enter = game.add.button(game.world.centerX, game.world.centerY+100, 'enter', play);
-    control = game.add.button(game.world.centerX, game.world.centerY+200, 'control', control);
+    //enter = game.add.button(game.world.centerX, game.world.centerY+100, 'enter', play);
+    //control = game.add.button(game.world.centerX, game.world.centerY+200, 'control', control);
     //button2 = game.add.button(game.world.centerX, game.world.centerY-50, 'button', actionOnClick2);
+
+    document.write('<button onClick="hello()"></button>');
 
     logo = game.add.sprite(game.world.centerX,game.world.centerY-150,'logo');
     logo.anchor.setTo(0.5,0.5);
@@ -78,7 +91,7 @@ function create(){
 }
 
 function update(){
-
+    scoreText = game.add.text(30, 30, 'PAIR: ' + password, { fontSize: '30px', fill: '#FFFF00' });
 }
 
 function play(){
@@ -99,7 +112,7 @@ function preload2(){
     //game.load.image('plane','assets/sprites/jet.png');
     game.load.image('missile','assets/sprites/missile.png');
     game.load.image('ground','assets/sprites/desert.png');
-    game.load.image('house','assets/sprites/house.png');
+    game.load.image('house','assets/sprites/tent.png');
     game.load.image('bullet','assets/sprites/bomb.png');
     game.load.image('bg','assets/sprites/back2.jpg');
     game.load.audio('rotor','assets/audio/rotor.wav');
@@ -119,6 +132,7 @@ var missiles;
 var score = 0;
 var score_timer;
 var houses;
+var loop_hide;
 
 function create2(){
     console.log("cre2");
@@ -141,7 +155,7 @@ function create2(){
 
     heli.anchor.setTo(0.5,0.5);
     heli.body.setSize(350,150,0,0);
-    heli.scale.setTo(0.3,0.3);
+    heli.scale.setTo(0.35,0.35);
     heli.body.collideWorldBounds=true;
 
     weapon = game.add.weapon(1, 'bullet');
@@ -187,7 +201,7 @@ function create2(){
         var missile = missiles.create(game.world.width + 10, ypos, 'missile');
         missile.anchor.setTo(0.5,0.5);
         missile.body.setSize(2000,500,0,0);
-        missile.scale.setTo(0.05,0.05);
+        missile.scale.setTo(0.04,0.04);
         missile.checkWorldBounds = true;
         missile.events.onOutOfBounds.add(missileOut, this);
         missile.body.velocity.x = -600;
@@ -222,13 +236,13 @@ function create2(){
     houses.physicsBodyType = Phaser.Physics.ARCADE;
 
 
-    var loop_hide = setInterval(function(){
+    loop_hide = setInterval(function(){
         var xpos = game.rnd.integerInRange(game.world.width+10, game.world.width+50);
 
         var house = houses.create(xpos, game.world.height - 70, 'house');
         house.anchor.setTo(0.5,0.5);
         house.body.setSize(450,400,80,0);
-        house.scale.setTo(0.2,0.2);
+        house.scale.setTo(0.3,0.3);
         house.body.velocity.x = -200;
 
     },3000);
@@ -314,6 +328,8 @@ function impact_g(heli, ground){
 
 }
 
+
+
 function impact_h(weapon, house){
 
     console.log("impacct");
@@ -363,7 +379,7 @@ function update2(){
 
     ground.body.velocity.x = -200;
 
-    if(ground.x < -100){
+    if(ground.x < -50){
         ground.reset(0,game.world.height - 70);
 
         //  And give it a new random velocity
@@ -408,6 +424,10 @@ function preload3(){
 
 function create3(){
 
+    pass = prompt("Enter password");
+
+    send_pass(pass);
+
     up = game.add.button(game.world.centerX + 200, game.world.centerY + 200 , 'up', up);
     fire = game.add.button(game.world.centerX - 200, game.world.centerY + 200, 'fire', fire);
     // down = game.add.button(game.world.centerX , game.world.centerY, 'down', down);
@@ -444,20 +464,33 @@ function update3(){
 function preload4(){
     game.load.image('replay','assets/sprites/replay.png');
     game.load.image('home','assets/sprites/home.png');
+    game.load.image('replay','assets/sprites/replay.png');
+}
+
+// function goHome(){
+//     console.log("home");
+//     game.state.start('gameState1');
+// }
+
+function goReplay(){
+    console.log("replay");
+    game.state.start('gameState2');
 }
 
 function create4(){
 
+    clearInterval(loop_hide);
     game.scale.stopFullScreen();
 
     scoreTextf = game.add.text(game.world.centerX, game.world.centerY, 'Game Over! \n\n\t\tScore: '+score, { fontSize: '32px', fill: '#FFF'});
     scoreTextf.anchor.setTo(0.5,0.5);
 
-    home = game.add.button(50, 50 , 'home', function(){
-        window.location.reload();
-    });
+    //var home = game.add.button(50, 50 , 'home', goHome);
+
+    var replay = game.add.button(50, 200 , 'replay', goReplay);
 
     home.scale.setTo(0.4,0.4);
+    replay.scale.setTo(0.1,0.1);
 
 }
 
