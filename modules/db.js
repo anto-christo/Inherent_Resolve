@@ -18,7 +18,7 @@ function insertScore(score) {
     assert.equal(null, err);
     var name = score.name;
     var score = score.score;
-    db.collection('score').find({name:name]}).toArray(function(res,result){
+    db.collection('score').find({name:name}).toArray(function(res,result){
       
       if (result.length > 0) // players exists
       {
