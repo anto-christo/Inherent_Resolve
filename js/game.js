@@ -1,9 +1,29 @@
-var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS);
+var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO);
 
+
+var Client = {};
+Client.socket = io.connect();
+
+var password = 'Generating password....';
+
+Client.socket.on('newplayer',function(data){
+    console.log("on new");
+    
+    password = data;
+    console.log(password);
+});
 
 var gameState1 = function(){
     console.log("gameState1");
 }
+
+Client.socket.on('launch',function(){
+    release();
+});
+
+Client.socket.on('move',function(data){
+    movePlayer(data.x,data.y);
+});
 
 gameState1.prototype = {
     preload:preload,
@@ -52,42 +72,39 @@ game.state.add('gameState4', gameState4);
 
 game.state.start('gameState1');
 
-var password = 'Generating password.....';
-
-function connect_player(data){
-    password = data;
-    console.log(password);
-}
-
+//var password = 'Generating password.....';
 
 function preload(){
     // game.load.image('button','assets/sprites/play.png');
     game.load.image('enter','assets/sprites/enter.png');
     game.load.image('control','assets/sprites/control.png');
-    game.load.image('logo','assets/sprites/logo.png');
+    game.load.image('lp','assets/sprites/lp1.png');
 }
 
-function hello(){
-    alert("hello");
-}
 
 function create(){
 
-    //enter = game.add.button(game.world.centerX, game.world.centerY+100, 'enter', play);
-    //control = game.add.button(game.world.centerX, game.world.centerY+200, 'control', control);
-    //button2 = game.add.button(game.world.centerX, game.world.centerY-50, 'button', actionOnClick2);
+    // var height = window.innerHeight;
+    // var width = window.innerWidth;
 
-    document.write('<button onClick="hello()"></button>');
+    // landing = game.add.tileSprite(0, 0,width,height, 'lp');
 
-    logo = game.add.sprite(game.world.centerX,game.world.centerY-150,'logo');
-    logo.anchor.setTo(0.5,0.5);
-    logo.scale.setTo(0.3,0.3);
+    enter = game.add.button(game.world.centerX, game.world.centerY+100, 'enter', play);
+    // control = game.add.button(game.world.centerX, game.world.centerY+200, 'control', control);
+    // //button2 = game.add.button(game.world.centerX, game.world.centerY-50, 'button', actionOnClick2);
 
-    enter.anchor.setTo(0.5,0.5);
-    enter.scale.setTo(0.6,0.6);
+    // logo = game.add.sprite(game.world.centerX,game.world.centerY-150,'logo');
+    // logo.anchor.setTo(0.5,0.5);
+    // logo.scale.setTo(0.3,0.3);
 
-    control.anchor.setTo(0.5,0.5);
-    control.scale.setTo(0.6,0.6);
+    // enter.anchor.setTo(0.5,0.5);
+    // enter.scale.setTo(0.6,0.6);
+
+    // control.anchor.setTo(0.5,0.5);
+    // control.scale.setTo(0.6,0.6);
+
+   
+
 }
 
 function update(){
@@ -434,6 +451,8 @@ function create3(){
     // left = game.add.button(game.world.centerX - 200, game.world.centerY, 'left', left);
     // right = game.add.button(game.world.centerX + 200, game.world.centerY, 'right', right);
 
+    console.log(game.input.pointer1);
+
     up.anchor.setTo(0.5,0.5);
     fire.anchor.setTo(0.5,0.5);
 
@@ -488,7 +507,11 @@ function create4(){
     //var home = game.add.button(50, 50 , 'home', goHome);
 
     var replay = game.add.button(50, 200 , 'replay', goReplay);
-
+    Client.socket.emit('sendScore',score);
+    Client.socket.emit('getHighScore')
+    Client.socket.on('sendHighScore', function(data){
+        console.log(" in send high score data: "+data)
+    });
     home.scale.setTo(0.4,0.4);
     replay.scale.setTo(0.1,0.1);
 
