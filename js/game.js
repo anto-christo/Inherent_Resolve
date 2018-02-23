@@ -154,6 +154,8 @@ var loop_hide;
 function create2(){
     console.log("cre2");
 
+    score = 0;
+
     game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
     game.physics.startSystem(Phaser.Physics.ARCADE);

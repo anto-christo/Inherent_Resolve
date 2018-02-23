@@ -92,7 +92,7 @@ app.get('/control',function(req,res){
     res.sendFile(__dirname+'/control.html');
 });
 
-server.listen(process.env.PORT || 3012,function(){
+server.listen(process.env.PORT || 3000,function(){
     console.log('Listening on '+server.address().port);
 });
 
@@ -116,7 +116,8 @@ io.on('connection',function(socket){
 
     clients.push({"socket":socket.id,"pass":id[0]}); 
     socket.on('sendScore', function (score) {
-        var username = req.sess.username;
+        var username = socket.request.sess.username;
+        console.log("username: "+username)
         var record = { name: username, score: score };
         db.insertScore(record);
     })

@@ -11,14 +11,16 @@ MongoClient.connect(url, function (err, db) {
   db.close();
 });
 
-function insertScore(score) {
-
+function insertScore(data) {
+  console.log(data);
   // Use connect method to connect to the Server
   MongoClient.connect(url, function (err, db) {
     assert.equal(null, err);
-    var name = score.name;
+    var name = data.name;
+    var score = data.score;
+    
     console.log("name="+name);
-    var score = score.score;
+    console.log("score="+score);
     db.collection('score').find({name:name}).toArray(function(res,result){
       
       if (result.length > 0) // players exists
@@ -32,7 +34,7 @@ function insertScore(score) {
       }
       else
       {
-        db.collection('score').insert(score, function (err, r) {
+        db.collection('score').insert(data, function (err, r) {
           assert.equal(null, err);
           assert.equal(1, r.insertedCount);
     
