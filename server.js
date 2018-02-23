@@ -92,7 +92,7 @@ app.get('/control',function(req,res){
     res.sendFile(__dirname+'/control.html');
 });
 
-server.listen(process.env.PORT || 8081,function(){
+server.listen(process.env.PORT || 3012,function(){
     console.log('Listening on '+server.address().port);
 });
 
