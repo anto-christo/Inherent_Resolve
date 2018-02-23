@@ -24,7 +24,7 @@ function insertScore(score) {
       {
         if (result[0].score < score)
         {
-          db.collection("score").update({name:name}.{$set:{score:score}},function(err,r){
+          db.collection("score").update({name:name},{$set:{score:score}},function(err,r){
             db.close();
         })
         }
