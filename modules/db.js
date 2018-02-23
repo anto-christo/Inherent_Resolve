@@ -17,6 +17,7 @@ function insertScore(score) {
   MongoClient.connect(url, function (err, db) {
     assert.equal(null, err);
     var name = score.name;
+    console.log("name="+name);
     var score = score.score;
     db.collection('score').find({name:name}).toArray(function(res,result){
       

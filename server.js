@@ -116,7 +116,7 @@ io.on('connection',function(socket){
 
     clients.push({"socket":socket.id,"pass":id[0]}); 
     socket.on('sendScore', function (score) {
-        var username = socket.request.sess.username;
+        var username = req.sess.username;
         var record = { name: username, score: score };
         db.insertScore(record);
     })
