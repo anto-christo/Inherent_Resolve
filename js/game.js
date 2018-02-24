@@ -316,7 +316,7 @@ function create2(){
 
     scoreText = game.add.text(30, 30, 'SCORE: ' + score, { fontSize: '15px', fill: '#FFFF00' });
 
-    if(keyboard){
+    if(keyboard==1){
         cursors = game.input.keyboard.createCursorKeys();
 
         fireButton = game.input.keyboard.addKey(Phaser.KeyCode.CONTROL);
@@ -455,7 +455,7 @@ function update2(){
         ground.body.velocity.x = -200;
     }
 
-    if(keyboard){
+    if(keyboard == 1){
         if(fireButton.isDown){
             weapon.fire();
         }
