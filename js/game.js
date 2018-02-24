@@ -153,6 +153,9 @@ function update(){
     text1.anchor.setTo(0.5,0.5);
     text2.anchor.setTo(0.5,0.5);
     text3.anchor.setTo(0.5,0.5);
+
+    text1 = game.add.text(game.world.centerX, game.world.height-50, 'Works best on Mozilla Firefox', style);
+    text1.anchor.setTo(0.5,0.5);
 }
 
 // function play(){
