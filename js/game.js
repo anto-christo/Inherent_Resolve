@@ -1,10 +1,12 @@
 var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO);
 
+var keyboard = 0;
+var mobile = 0;
 
 var Client = {};
 Client.socket = io.connect();
 
-var password = 'Generating password....';
+var password = null;
 
 Client.socket.on('newplayer',function(data){
     console.log("on new");
@@ -77,6 +79,9 @@ game.state.start('gameState1');
 function preload(){
     // game.load.image('button','assets/sprites/play.png');
     game.load.image('enter','assets/sprites/enter.png');
+    game.load.image('key','assets/sprites/key.png');
+    game.load.image('mobile','assets/sprites/mobile.png');
+    game.load.image('play','assets/sprites/play.png');
     game.load.image('control','assets/sprites/control.png');
     game.load.image('lp','assets/sprites/lp1.png');
 }
@@ -89,7 +94,19 @@ function create(){
 
     // landing = game.add.tileSprite(0, 0,width,height, 'lp');
 
-    enter = game.add.button(game.world.centerX, game.world.centerY+100, 'enter', play);
+    key = game.add.button(game.world.centerX-300, game.world.centerY-200, 'key', with_key);
+    mobile = game.add.button(game.world.centerX+300, game.world.centerY-200, 'mobile', with_mobile);
+    key_play = game.add.button(game.world.centerX-300, game.world.centerY+150, 'play', with_key);
+    mobile_play = game.add.button(game.world.centerX+300, game.world.centerY+150, 'play', with_mobile);
+
+    key.anchor.setTo(0.5,0.5);
+    mobile.anchor.setTo(0.5,0.5);
+    key_play.anchor.setTo(0.5,0.5);
+    mobile_play.anchor.setTo(0.5,0.5);
+
+    key.scale.setTo(0.25,0.25);
+    mobile.scale.setTo(0.15,0.15);
+
     // control = game.add.button(game.world.centerX, game.world.centerY+200, 'control', control);
     // //button2 = game.add.button(game.world.centerX, game.world.centerY-50, 'button', actionOnClick2);
 
@@ -103,24 +120,51 @@ function create(){
     // control.anchor.setTo(0.5,0.5);
     // control.scale.setTo(0.6,0.6);
 
-   
+    
 
 }
 
-function update(){
-    scoreText = game.add.text(30, 30, 'PAIR: ' + password, { fontSize: '30px', fill: '#FFFF00' });
-}
-
-function play(){
-    //console.log("1");
+function with_key(){
+    keyboard = 1;
     game.scale.startFullScreen(false);
     game.state.start('gameState2');
 }
 
-function control(){
-    //console.log("2");
-    game.state.start('gameState3');
+function with_mobile(){
+    mobile = 1;
+    game.scale.startFullScreen(false);
+    game.state.start('gameState2');
 }
+
+function update(){
+
+    var style = { font: "25px Arial", fill: "#ffffff" };
+
+    text1 = game.add.text(game.world.centerX-300, game.world.centerY-50, 'Play using keyboard', style);
+    text2 = game.add.text(game.world.centerX-300, game.world.centerY, 'CTRL -> Drop Bomb on Tents:', style);
+    text3 = game.add.text(game.world.centerX-300, game.world.centerY+50, 'SPACE -> UP',style);
+    text1.anchor.setTo(0.5,0.5);
+    text2.anchor.setTo(0.5,0.5);
+    text3.anchor.setTo(0.5,0.5);
+
+    text1 = game.add.text(game.world.centerX+300, game.world.centerY-50, 'Visit ir.teknack.in/control in your mobile device.', style);
+    text2 = game.add.text(game.world.centerX+300, game.world.centerY, 'Enter Password :' + password,style);
+    text3 = game.add.text(game.world.centerX+300, game.world.centerY+50, 'Final score + 20% if controlled with mobile',style);
+    text1.anchor.setTo(0.5,0.5);
+    text2.anchor.setTo(0.5,0.5);
+    text3.anchor.setTo(0.5,0.5);
+}
+
+// function play(){
+//     //console.log("1");
+//     game.scale.startFullScreen(false);
+//     game.state.start('gameState2');
+// }
+
+// function control(){
+//     //console.log("2");
+//     game.state.start('gameState3');
+// }
 
 
 function preload2(){
@@ -193,10 +237,6 @@ function create2(){
     weapon.bulletSpeed = -600;
     //  Tell the Weapon to track the 'player' Sprite, offset by 14px horizontally, 0 vertically
     weapon.trackSprite(heli, 0, 0);
-
-    cursors = game.input.keyboard.createCursorKeys();
-
-    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
     rotor = game.add.audio('rotor');
     jetmu = game.add.audio('jetmu');
@@ -272,6 +312,13 @@ function create2(){
     },1000);
 
     scoreText = game.add.text(30, 30, 'SCORE: ' + score, { fontSize: '15px', fill: '#FFFF00' });
+
+    if(keyboard){
+        cursors = game.input.keyboard.createCursorKeys();
+
+        fireButton = game.input.keyboard.addKey(Phaser.KeyCode.CONTROL);
+        jumpButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+    }
 
 }
 
@@ -405,6 +452,18 @@ function update2(){
         ground.body.velocity.x = -200;
     }
 
+    if(keyboard){
+        if(fireButton.isDown){
+            weapon.fire();
+        }
+
+        if(jumpButton.isDown){
+                heli.body.gravity.y = 0;
+                heli.body.velocity.y = -300;
+                heli.body.gravity.y = 800;
+        }
+    }
+
 }
 
 function inc_score(){
@@ -488,10 +547,10 @@ function preload4(){
     game.load.image('replay','assets/sprites/replay.png');
 }
 
-// function goHome(){
-//     console.log("home");
-//     game.state.start('gameState1');
-// }
+function goHome(){
+    console.log("home");
+    game.state.start('gameState1');
+}
 
 function goReplay(){
     console.log("replay");
@@ -503,19 +562,32 @@ function create4(){
     clearInterval(loop_hide);
     game.scale.stopFullScreen();
 
-    scoreTextf = game.add.text(game.world.centerX, game.world.centerY, 'Game Over! \n\n\t\tScore: '+score, { fontSize: '32px', fill: '#FFF'});
+    scoreTextf = game.add.text(game.world.centerX, 20, 'Current Score: '+score, { fontSize: '32px', fill: '#FFF'});
     scoreTextf.anchor.setTo(0.5,0.5);
 
-    //var home = game.add.button(50, 50 , 'home', goHome);
+    var home = game.add.button(50, 50 , 'home', goHome);
 
-    var replay = game.add.button(50, 200 , 'replay', goReplay);
+    var replay = game.add.button(game.world.width-100, game.world.height-100 , 'replay', goReplay);
+
+    if(mobile){
+        score = score + (score*0.20);
+    }
+
     Client.socket.emit('sendScore',score);
     Client.socket.emit('getHighScore')
     Client.socket.on('sendHighScore', function(data){
-        console.log(" in send high score data: "+data)
+
+        game.add.text(350, 200, "Rank", { fontSize: '30px', fill: '#FFF'});
+        game.add.text(650, 200, "Name", { fontSize: '30px', fill: '#FFF'});
+        game.add.text(950, 200, "Score", { fontSize: '30px', fill: '#FFF'});
+        for(var i=0; i<data.length; i++){
+            game.add.text(350,i*50 +250, i+1 , { fontSize: '30px', fill: '#FFF'});
+            game.add.text(650,i*50 +250, data[i].name, { fontSize: '30px', fill: '#FFF'});
+            game.add.text(950,i*50 +250, data[i].score, { fontSize: '30px', fill: '#FFF'});
+        }
     });
     home.scale.setTo(0.4,0.4);
-    replay.scale.setTo(0.1,0.1);
+    replay.scale.setTo(0.4,0.4);
 
 }
 
