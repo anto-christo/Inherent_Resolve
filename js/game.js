@@ -112,19 +112,19 @@ function update(){
 }
 
 function play(){
-    console.log("1");
+    //console.log("1");
     game.scale.startFullScreen(false);
     game.state.start('gameState2');
 }
 
 function control(){
-    console.log("2");
+    //console.log("2");
     game.state.start('gameState3');
 }
 
 
 function preload2(){
-    console.log("pre1");
+    //console.log("pre1");
     game.load.spritesheet('heli','assets/sprites/heli.png',423,150);
     //game.load.image('plane','assets/sprites/jet.png');
     game.load.image('missile','assets/sprites/missile.png');
@@ -152,7 +152,7 @@ var houses;
 var loop_hide;
 
 function create2(){
-    console.log("cre2");
+    //console.log("cre2");
 
     score = 0;
 
@@ -225,7 +225,8 @@ function create2(){
         missile.events.onOutOfBounds.add(missileOut, this);
         missile.body.velocity.x = -600;
 
-        if(count==8){
+        if(count==4){
+            console.log("in count 8");
             clearInterval(loop);
         }
 
@@ -290,9 +291,22 @@ function render2() {
 //     missiles.forEachAlive(renderGroup, this);
 // }
 
+function missileOut(missile) {
+
+    //setTimeout(function(){
+        var ypos = game.rnd.integerInRange(10, game.world.height-150)
+        //  Move the alien to the top of the screen again
+        missile.reset(game.world.width + 10, ypos);
+
+        //  And give it a new random velocity
+        missile.body.velocity.x = -600;
+    //},1000);
+
+}
+
 function impact(heli, missile){
 
-    console.log("impacct");
+    //console.log("impacct");
 
     hit.play();
   
@@ -322,7 +336,7 @@ function impact(heli, missile){
 
 function impact_g(heli, ground){
 
-    console.log("impacct");
+    //console.log("impacct");
 
     hit.play();
   
@@ -351,7 +365,7 @@ function impact_g(heli, ground){
 
 function impact_h(weapon, house){
 
-    console.log("impacct");
+    //console.log("impacct");
 
     hit.play();
   
@@ -368,20 +382,6 @@ function impact_h(weapon, house){
     },1000);
 
     score+=50;    
-}
-
-
-function missileOut(missile) {
-
-    setTimeout(function(){
-        var ypos = game.rnd.integerInRange(10, game.world.height-150)
-        //  Move the alien to the top of the screen again
-        missile.reset(game.world.width + 10, ypos);
-
-        //  And give it a new random velocity
-        missile.body.velocity.x = -600;
-    },1000);
-
 }
 
 function update2(){
@@ -419,7 +419,7 @@ function release(){
 
 function movePlayer(x,y){
 
-        console.log("x="+x+":y="+y);
+        //console.log("x="+x+":y="+y);
 
         if(y<0){
             heli.body.gravity.y = 0;
@@ -428,8 +428,8 @@ function movePlayer(x,y){
         }
 
 
-        console.log(heli.x);
-        console.log(heli.y);
+        //console.log(heli.x);
+        //console.log(heli.y);
 }
 
 function preload3(){
@@ -453,7 +453,7 @@ function create3(){
     // left = game.add.button(game.world.centerX - 200, game.world.centerY, 'left', left);
     // right = game.add.button(game.world.centerX + 200, game.world.centerY, 'right', right);
 
-    console.log(game.input.pointer1);
+    //console.log(game.input.pointer1);
 
     up.anchor.setTo(0.5,0.5);
     fire.anchor.setTo(0.5,0.5);
