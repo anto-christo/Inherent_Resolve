@@ -8,7 +8,7 @@ const db = require('./modules/db.js');
 
 //********************Session Code Start*******************************//
 //Copy from here
-const environment = "production";  ///change it to "production" when the game is deployed on the teknack servers
+const environment = "development";  ///change it to "production" when the game is deployed on the teknack servers
 
 const sessions = require("client-sessions");
 const bodyParser = require('body-parser');
@@ -92,7 +92,7 @@ app.get('/control',function(req,res){
     res.sendFile(__dirname+'/control.html');
 });
 
-server.listen(process.env.PORT || 3018,function(){
+server.listen(process.env.PORT || 3000,function(){
     console.log('Listening on '+server.address().port);
 });
 
